@@ -1,29 +1,33 @@
 from datetime import datetime
 from typing import Optional
 
-from pydantic import BaseModel, ConfigDict, EmailStr
+from pydantic import BaseModel, ConfigDict, EmailStr, Field
 
 from models import UserRole
 
 
-class UserBase(BaseModel):
-    name: str
+class UserRegister(BaseModel):
+    """Registro publico. El rol siempre se fuerza a viewer en el backend."""
+    name: str = Field(min_length=1, max_length=100)
     email: EmailStr
-    role: UserRole = UserRole.viewer
+    password: str = Field(min_length=6)
 
 
-class UserCreate(UserBase):
+class UserLogin(BaseModel):
+    email: EmailStr
     password: str
 
 
-class UserOut(UserBase):
+class UserOut(BaseModel):
     id: int
+    name: str
+    email: EmailStr
+    role: UserRole
     created_at: Optional[datetime] = None
 
     model_config = ConfigDict(from_attributes=True)
 
 
 class Token(BaseModel):
-    """Respuesta de login. El endpoint que lo emite se implementa en HU-001."""
     access_token: str
     token_type: str = "bearer"
