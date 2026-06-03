@@ -22,16 +22,14 @@ jobs:
 
       - name: Instalar dependencias
         run: |
-          pip install -r requirements.txt
+          pip install -r requirements-dev.txt
           pip install ruff
 
       - name: Lint (ruff)
         run: ruff check .
 
-      - name: Verificar que la app importa
-        env:
-          DATABASE_URL: sqlite+pysqlite:///:memory:
-        run: python -c "import main; print('main importa OK')"
+      - name: Pruebas (pytest)
+        run: python -m pytest tests/ -q
 
   frontend:
     name: Frontend (lint + build)
