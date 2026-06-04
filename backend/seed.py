@@ -51,8 +51,10 @@ def seed_data():
                 ))
                 print(f"Usuario creado: {email} / {password} ({role_name})")
             else:
+                user.name = name
+                user.hashed_password = hash_password(password)
                 user.role_id = roles_dict[role_name].id
-                print(f"Usuario ya existe: {email} ({role_name})")
+                print(f"Usuario actualizado: {email} ({role_name})")
 
         db.commit()
         print("Seed completado.")

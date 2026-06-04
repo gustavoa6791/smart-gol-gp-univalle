@@ -34,11 +34,7 @@ class UserOut(BaseModel):
     id: int
     name: str
     email: EmailStr
-<<<<<<< HEAD
     role: Optional[RoleOut] = None
-=======
-    role: UserRole
->>>>>>> origin/main
     created_at: Optional[datetime] = None
 
     model_config = ConfigDict(from_attributes=True)
