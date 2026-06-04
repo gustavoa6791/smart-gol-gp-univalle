@@ -1,6 +1,6 @@
 import enum as py_enum
 
-from sqlalchemy import Column, DateTime, Enum, Integer, String, JSON, ForeignKey
+from sqlalchemy import Column, UniqueConstraint, DateTime, Enum, Integer, String, JSON, ForeignKey
 from sqlalchemy.orm import relationship
 from sqlalchemy.sql import func
 
@@ -42,9 +42,7 @@ class TournamentTemplate(Base):
     name = Column(String(255), unique=True, nullable=False)
     config = Column(JSON, nullable=False)
 
-from sqlalchemy import (
-    UniqueConstraint,
-)
+
 class Tournament(Base):
     __tablename__ = "tournaments"
 
