@@ -1,9 +1,21 @@
 from datetime import datetime
-from typing import Optional
+from typing import Optional, List
 
 from pydantic import BaseModel, ConfigDict, EmailStr, Field
 
-from models import UserRole
+
+class RoleBase(BaseModel):
+    name: str
+    permissions: List[str] = []
+
+
+class RoleCreate(RoleBase):
+    pass
+
+
+class RoleOut(RoleBase):
+    id: int
+    model_config = ConfigDict(from_attributes=True)
 
 
 class UserRegister(BaseModel):
@@ -22,7 +34,7 @@ class UserOut(BaseModel):
     id: int
     name: str
     email: EmailStr
-    role: UserRole
+    role: Optional[RoleOut] = None
     created_at: Optional[datetime] = None
 
     model_config = ConfigDict(from_attributes=True)
