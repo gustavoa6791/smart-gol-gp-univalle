@@ -1,29 +1,45 @@
 from datetime import datetime
-from typing import Optional
+from typing import Optional, List
 
-from pydantic import BaseModel, ConfigDict, EmailStr
-
-from models import UserRole
+from pydantic import BaseModel, ConfigDict, EmailStr, Field
 
 
-class UserBase(BaseModel):
+class RoleBase(BaseModel):
     name: str
+    permissions: List[str] = []
+
+
+class RoleCreate(RoleBase):
+    pass
+
+
+class RoleOut(RoleBase):
+    id: int
+    model_config = ConfigDict(from_attributes=True)
+
+
+class UserRegister(BaseModel):
+    """Registro publico. El rol siempre se fuerza a viewer en el backend."""
+    name: str = Field(min_length=1, max_length=100)
     email: EmailStr
-    role: UserRole = UserRole.viewer
+    password: str = Field(min_length=6)
 
 
-class UserCreate(UserBase):
+class UserLogin(BaseModel):
+    email: EmailStr
     password: str
 
 
-class UserOut(UserBase):
+class UserOut(BaseModel):
     id: int
+    name: str
+    email: EmailStr
+    role: Optional[RoleOut] = None
     created_at: Optional[datetime] = None
 
     model_config = ConfigDict(from_attributes=True)
 
 
 class Token(BaseModel):
-    """Respuesta de login. El endpoint que lo emite se implementa en HU-001."""
     access_token: str
     token_type: str = "bearer"

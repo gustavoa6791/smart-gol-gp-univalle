@@ -1,5 +1,6 @@
 "use client";
 
+import Link from "next/link";
 import { useEffect, useState } from "react";
 import api from "@/lib/api";
 
@@ -19,7 +20,14 @@ export default function Home() {
   return (
     <main className="flex min-h-screen flex-col items-center justify-center gap-4 p-8">
       <h1 className="text-3xl font-bold text-green-700">Smart Gol</h1>
-      <p className="text-gray-500">Base del proyecto (HU-000) lista.</p>
+      <p className="text-gray-500">Sistema de gestión de torneos deportivos.</p>
+
+      <Link
+        href="/login"
+        className="rounded-md bg-green-600 px-5 py-2 text-sm font-medium text-white transition hover:bg-green-700"
+      >
+        Iniciar sesión
+      </Link>
 
       <div className="rounded-lg border px-6 py-4 text-sm">
         <p className="font-medium">Estado del backend:</p>

@@ -17,12 +17,15 @@ api.interceptors.request.use((config) => {
   return config;
 });
 
-// Redirige a /login ante un 401
+// Redirige a /login ante un 401 (salvo durante el propio login)
 api.interceptors.response.use(
   (res) => res,
   (error) => {
-    if (error.response?.status === 401 && typeof window !== "undefined") {
+    const url: string = error.config?.url || "";
+    const isAuthCall = url.includes("/api/auth/login") || url.includes("/api/auth/register");
+    if (error.response?.status === 401 && typeof window !== "undefined" && !isAuthCall) {
       localStorage.removeItem("access_token");
+      document.cookie = "access_token=; path=/; max-age=0; SameSite=Lax";
       window.location.href = "/login";
     }
     return Promise.reject(error);

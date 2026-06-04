@@ -66,17 +66,14 @@ def get_current_user(
     return user
 
 
-def require_roles(*allowed_roles: models.UserRole):
-    """Factory de dependency: restringe una ruta a los roles indicados."""
+def require_permissions(*allowed_permissions: str):
+    """Factory de dependency: restringe una ruta a los permisos indicados (HU-002)."""
     def _checker(current_user: models.User = Depends(get_current_user)) -> models.User:
-        if current_user.role not in allowed_roles:
+        user_permissions = current_user.role.permissions if current_user.role else []
+        if not any(p in user_permissions for p in allowed_permissions):
             raise HTTPException(
                 status_code=status.HTTP_403_FORBIDDEN,
                 detail="No tienes permisos para realizar esta accion",
             )
         return current_user
     return _checker
-
-
-require_admin = require_roles(models.UserRole.admin)
-require_admin_or_organizer = require_roles(models.UserRole.admin, models.UserRole.organizer)
