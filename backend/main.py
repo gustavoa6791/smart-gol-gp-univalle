@@ -3,7 +3,7 @@ import time
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from sqlalchemy import text
-
+from routers import teams
 from database import engine
 from routers import auth, health, roles, users, templates
 
@@ -51,3 +51,6 @@ def startup():
 @app.get("/")
 def root():
     return {"message": "Smart Gol API is running", "docs": "/docs"}
+
+
+app.include_router(teams.router)

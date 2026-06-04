@@ -43,3 +43,45 @@ class UserOut(BaseModel):
 class Token(BaseModel):
     access_token: str
     token_type: str = "bearer"
+
+class TournamentOut(BaseModel):
+    id: int
+    name: str
+
+    model_config = ConfigDict(
+        from_attributes=True
+    )
+
+# implementacion HU-005
+
+
+class CategoryCreate(BaseModel):
+    name: str
+
+
+class CategoryOut(BaseModel):
+    id: int
+    name: str
+
+    model_config = ConfigDict(from_attributes=True)
+
+
+class TeamCreate(BaseModel):
+    name: str
+    tournament_id: int
+    category_id: int
+
+
+class TeamOut(BaseModel):
+    id: int
+    name: str
+
+    tournament_id: int
+    category_id: int
+
+    tournament: Optional[TournamentOut] = None
+    category: Optional[CategoryOut] = None
+
+    model_config = ConfigDict(
+        from_attributes=True
+    )

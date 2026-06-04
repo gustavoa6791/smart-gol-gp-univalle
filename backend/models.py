@@ -1,4 +1,4 @@
-from sqlalchemy import Column, DateTime, Integer, String, JSON, ForeignKey
+from sqlalchemy import Column, UniqueConstraint, DateTime, Integer, String, JSON, ForeignKey
 from sqlalchemy.orm import relationship
 from sqlalchemy.sql import func
 
@@ -36,3 +36,67 @@ class TournamentTemplate(Base):
     id = Column(Integer, primary_key=True, index=True)
     name = Column(String(255), unique=True, nullable=False)
     config = Column(JSON, nullable=False)
+
+
+class Tournament(Base):
+    __tablename__ = "tournaments"
+
+    id = Column(Integer, primary_key=True, index=True)
+
+    name = Column(String(255), unique=True, nullable=False)
+
+    template_id = Column(
+        Integer,
+        ForeignKey("tournament_templates.id"),
+        nullable=False
+    )
+
+    template = relationship("TournamentTemplate")
+
+# implementacion HU-005
+
+class Category(Base):
+    __tablename__ = "categories"
+
+    id = Column(Integer, primary_key=True, index=True)
+    name = Column(
+    String(100),
+    unique=True,
+    nullable=False,
+    index=True)
+    teams = relationship("Team", back_populates="category")
+
+
+class Team(Base):
+    __tablename__ = "teams"
+
+    id = Column(Integer, primary_key=True, index=True)
+
+    name = Column(String(150), nullable=False)
+
+    tournament_id = Column(
+        Integer,
+        ForeignKey("tournaments.id"),
+        nullable=False,
+    )
+
+    category_id = Column(
+        Integer,
+        ForeignKey("categories.id"),
+        nullable=False,
+    )
+
+    tournament = relationship("Tournament")
+
+    category = relationship(
+        "Category",
+        back_populates="teams"
+    )
+
+    __table_args__ = (
+        UniqueConstraint(
+            "name",
+            "tournament_id",
+            name="uq_team_name_tournament",
+        ),
+    )
