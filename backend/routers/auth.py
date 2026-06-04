@@ -22,11 +22,28 @@ def register(data: schemas.UserRegister, db: Session = Depends(get_db)):
             status_code=status.HTTP_400_BAD_REQUEST,
             detail="El correo ya esta registrado",
         )
+<<<<<<< HEAD
+    
+    # Buscar el rol viewer por defecto
+    viewer_role = db.query(models.Role).filter(models.Role.name == "viewer").first()
+    if not viewer_role:
+        # Fallback de seguridad si no se ha ejecutado el seed
+        viewer_role = models.Role(name="viewer", permissions=["view_tournaments"])
+        db.add(viewer_role)
+        db.commit()
+        db.refresh(viewer_role)
+
+=======
+>>>>>>> origin/main
     user = models.User(
         name=data.name,
         email=data.email,
         hashed_password=auth_utils.hash_password(data.password),
+<<<<<<< HEAD
+        role_id=viewer_role.id,
+=======
         role=models.UserRole.viewer,
+>>>>>>> origin/main
     )
     db.add(user)
     db.commit()

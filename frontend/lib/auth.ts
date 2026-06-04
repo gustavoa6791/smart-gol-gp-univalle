@@ -1,4 +1,4 @@
-import type { UserRole } from "@/lib/types";
+import type { Role } from "@/lib/types";
 
 const TOKEN_KEY = "access_token";
 
@@ -16,14 +16,11 @@ export function clearSession() {
 
 /**
  * Ruta destino segun el rol tras iniciar sesion.
- * Punto de extension: cuando cada rol tenga su panel propio (HU futuras),
- * mapear aqui (ej. admin -> "/admin").
  */
-export function routeForRole(role: UserRole): string {
-  const routes: Record<UserRole, string> = {
-    admin: "/dashboard",
-    organizer: "/dashboard",
-    viewer: "/dashboard",
-  };
-  return routes[role] ?? "/dashboard";
+export function routeForRole(role: Role | null): string {
+  // Por ahora todos van al dashboard, pero se puede personalizar segun el nombre del rol
+  if (role?.name === "admin") {
+    return "/dashboard";
+  }
+  return "/dashboard";
 }

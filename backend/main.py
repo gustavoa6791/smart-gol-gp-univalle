@@ -5,7 +5,7 @@ from fastapi.middleware.cors import CORSMiddleware
 from sqlalchemy import text
 
 from database import engine
-from routers import auth, health
+from routers import auth, health, roles, users
 
 app = FastAPI(
     title="Smart Gol API",
@@ -24,7 +24,6 @@ app.add_middleware(
 
 # Routers. Cada HU agrega los suyos aqui.
 app.include_router(health.router)
-app.include_router(auth.router)
 
 
 @app.on_event("startup")
