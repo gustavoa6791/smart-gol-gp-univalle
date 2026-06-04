@@ -1,6 +1,4 @@
-import enum as py_enum
-
-from sqlalchemy import Column, UniqueConstraint, DateTime, Enum, Integer, String, JSON, ForeignKey
+from sqlalchemy import Column, UniqueConstraint, DateTime, Integer, String, JSON, ForeignKey
 from sqlalchemy.orm import relationship
 from sqlalchemy.sql import func
 
