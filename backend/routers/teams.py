@@ -61,11 +61,45 @@ def get_categories(
 # team CRUD hu-005
 
 
-@router.post("/")
+@router.post("/", response_model=schemas.TeamOut)
 def create_team(
     data: schemas.TeamCreate,
     db: Session = Depends(get_db)
 ):
+    # Validar categoría
+
+    category = (
+        db.query(models.Category)
+        .filter(
+            models.Category.id == data.category_id
+        )
+        .first()
+    )
+
+    if not category:
+        raise HTTPException(
+            status_code=404,
+            detail="Category not found"
+        )
+
+    # Validar torneo
+
+    tournament = (
+        db.query(models.Tournament)
+        .filter(
+            models.Tournament.id == data.tournament_id
+        )
+        .first()
+    )
+
+    if not tournament:
+        raise HTTPException(
+            status_code=404,
+            detail="Tournament not found"
+        )
+
+    # Validar nombre único dentro del torneo
+
     existing = (
         db.query(models.Team)
         .filter(
@@ -81,6 +115,8 @@ def create_team(
             detail="Team name already exists in tournament"
         )
 
+    # Crear equipo
+
     team = models.Team(
         name=data.name,
         tournament_id=data.tournament_id,
@@ -94,14 +130,14 @@ def create_team(
     return team
 
 
-@router.get("/")
+@router.get("/", response_model=list[schemas.TeamOut])
 def get_teams(
     db: Session = Depends(get_db)
 ):
     return db.query(models.Team).all()
 
 
-@router.get("/{team_id}")
+@router.get("/{team_id}", response_model=schemas.TeamOut)
 def get_team(
     team_id: int,
     db: Session = Depends(get_db)
@@ -121,12 +157,14 @@ def get_team(
     return team
 
 
-@router.put("/{team_id}")
+@router.put("/{team_id}", response_model=schemas.TeamOut)
 def update_team(
     team_id: int,
     data: schemas.TeamCreate,
     db: Session = Depends(get_db)
 ):
+    # Verificar que el equipo exista
+
     team = (
         db.query(models.Team)
         .filter(models.Team.id == team_id)
@@ -138,6 +176,40 @@ def update_team(
             status_code=404,
             detail="Team not found"
         )
+
+    # Validar categoría
+
+    category = (
+        db.query(models.Category)
+        .filter(
+            models.Category.id == data.category_id
+        )
+        .first()
+    )
+
+    if not category:
+        raise HTTPException(
+            status_code=404,
+            detail="Category not found"
+        )
+
+    # Validar torneo
+
+    tournament = (
+        db.query(models.Tournament)
+        .filter(
+            models.Tournament.id == data.tournament_id
+        )
+        .first()
+    )
+
+    if not tournament:
+        raise HTTPException(
+            status_code=404,
+            detail="Tournament not found"
+        )
+
+    # Validar nombre único dentro del torneo
 
     duplicate = (
         db.query(models.Team)
@@ -154,6 +226,8 @@ def update_team(
             status_code=400,
             detail="Team name already exists in tournament"
         )
+
+    # Actualizar equipo
 
     team.name = data.name
     team.tournament_id = data.tournament_id

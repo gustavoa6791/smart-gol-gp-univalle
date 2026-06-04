@@ -44,7 +44,13 @@ class Token(BaseModel):
     access_token: str
     token_type: str = "bearer"
 
+class TournamentOut(BaseModel):
+    id: int
+    name: str
 
+    model_config = ConfigDict(
+        from_attributes=True
+    )
 
 # implementacion HU-005
 
@@ -69,7 +75,13 @@ class TeamCreate(BaseModel):
 class TeamOut(BaseModel):
     id: int
     name: str
+
     tournament_id: int
     category_id: int
 
-    model_config = ConfigDict(from_attributes=True)
+    tournament: Optional[TournamentOut] = None
+    category: Optional[CategoryOut] = None
+
+    model_config = ConfigDict(
+        from_attributes=True
+    )

@@ -45,6 +45,20 @@ class TournamentTemplate(Base):
 from sqlalchemy import (
     UniqueConstraint,
 )
+class Tournament(Base):
+    __tablename__ = "tournaments"
+
+    id = Column(Integer, primary_key=True, index=True)
+
+    name = Column(String(255), unique=True, nullable=False)
+
+    template_id = Column(
+        Integer,
+        ForeignKey("tournament_templates.id"),
+        nullable=False
+    )
+
+    template = relationship("TournamentTemplate")
 
 # implementacion HU-005
 
@@ -52,8 +66,11 @@ class Category(Base):
     __tablename__ = "categories"
 
     id = Column(Integer, primary_key=True, index=True)
-    name = Column(String(100), unique=True, nullable=False)
-
+    name = Column(
+    String(100),
+    unique=True,
+    nullable=False,
+    index=True)
     teams = relationship("Team", back_populates="category")
 
 
@@ -76,7 +93,12 @@ class Team(Base):
         nullable=False,
     )
 
-    category = relationship("Category", back_populates="teams")
+    tournament = relationship("Tournament")
+
+    category = relationship(
+        "Category",
+        back_populates="teams"
+    )
 
     __table_args__ = (
         UniqueConstraint(
