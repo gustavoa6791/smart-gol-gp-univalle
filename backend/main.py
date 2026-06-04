@@ -51,3 +51,6 @@ def startup():
 @app.get("/")
 def root():
     return {"message": "Smart Gol API is running", "docs": "/docs"}
+
+from routers import teams
+app.include_router(teams.router)

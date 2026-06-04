@@ -41,3 +41,47 @@ class TournamentTemplate(Base):
     id = Column(Integer, primary_key=True, index=True)
     name = Column(String(255), unique=True, nullable=False)
     config = Column(JSON, nullable=False)
+
+from sqlalchemy import (
+    UniqueConstraint,
+)
+
+# implementacion HU-005
+
+class Category(Base):
+    __tablename__ = "categories"
+
+    id = Column(Integer, primary_key=True, index=True)
+    name = Column(String(100), unique=True, nullable=False)
+
+    teams = relationship("Team", back_populates="category")
+
+
+class Team(Base):
+    __tablename__ = "teams"
+
+    id = Column(Integer, primary_key=True, index=True)
+
+    name = Column(String(150), nullable=False)
+
+    tournament_id = Column(
+        Integer,
+        ForeignKey("tournaments.id"),
+        nullable=False,
+    )
+
+    category_id = Column(
+        Integer,
+        ForeignKey("categories.id"),
+        nullable=False,
+    )
+
+    category = relationship("Category", back_populates="teams")
+
+    __table_args__ = (
+        UniqueConstraint(
+            "name",
+            "tournament_id",
+            name="uq_team_name_tournament",
+        ),
+    )
